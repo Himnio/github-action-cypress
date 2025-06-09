@@ -1,4 +1,5 @@
 const { defineConfig } = require('cypress')
+const path = require('path')
 
 module.exports = defineConfig({
   e2e:{
@@ -6,8 +7,9 @@ module.exports = defineConfig({
   },
   reporter: 'mochawesome',
   reporterOptions: {
+    reportDir: path.join(__dirname, 'cypress/results'),
     overwrite: false,
-    html: true,
+    html: false,
     json: true,
   },
 })
