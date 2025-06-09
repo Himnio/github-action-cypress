@@ -1,6 +1,8 @@
 name: cypress-test
+
 on: push
-job:
+
+jobs:
   cypress-run:
     runs-on: ubuntu-24.04
     steps:
