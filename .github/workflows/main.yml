@@ -1,6 +1,47 @@
+# name: cypress-test
+
+# on: 
+
+#   push:
+#   workflow_dispatch:
+
+# jobs:
+#   cypress-run:
+#     runs-on: ubuntu-24.04
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         browsers: [chrome, firefox, edge]
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Create a director for report
+#         run: |
+#           mkdir -p cypess/reports/${{matrix.browsers}}
+
+#       - name: Cypress run in ${{ matrix.browsers }}
+#         uses: cypress-io/github-action@v6
+#         with:
+#           browsers: ${{matrix.browsers}}
+#           command: npx cypress run --browser ${{matrix.browser}} --reporter-options reportDir=cypress/reports/${{ matrix.browser }}
+
+#       - name: Merge Mochawesome reports
+#         run: npx mochawesome-merge cypress/report/${{ matrix.browsers }}/*.json > cypress/reports/${{ matrix.browsers }}/merged-reports.json
+
+#       - name: Generate HTML report
+#         run: npx marge cypress/report/${{ matrix.browsers}}/merged-reports.json --reportDir cypress/reports/${{ matrix.browsers }} -f "${{ matrix.browsers }}-report.html"
+      
+#       - name: Upload HTML reports
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: Cypress HTML Report ${{ matrix.browsers }} 
+#           path: cypress/report/${{ matrix.browsers }}
+
+
 name: cypress-test
 
-on: 
+on:
   push:
   workflow_dispatch:
 
@@ -10,29 +51,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browsers: [chrome, firefox, edge]
+        browsers: [chrome]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create a director for report
+      - name: Create a directory for report
         run: |
-          mkdir -p cypess/reports/${{matrix.browsers}}
+          mkdir -p cypress/reports/chrome
 
-      - name: Cypress run in ${{ matrix.browsers }}
+      - name: Cypress run in chrome
         uses: cypress-io/github-action@v6
         with:
-          browsers: ${{matrix.browsers}}
-          command: npx cypress run --browser ${{matrix.browser}} --reporter-options reportDir=cypress/reports/${{ matrix.browser }}
+          browsers: ${{ matrix.browsers }}
+          command: npx cypress run --browser chrome --reporter-options reportDir=cypress/reports/chrome
 
       - name: Merge Mochawesome reports
-        run: npx mochawesome-merge cypress/report/${{ matrix.browsers }}/*.json > cypress/reports/${{ matrix.browsers }}/merged-reports.json
+        run: npx mochawesome-merge cypress/reports/chrome/*.json > cypress/reports/chrome/merged-reports.json
 
       - name: Generate HTML report
-        run: npx marge cypress/report/${{ matrix.browsers}}/merged-reports.json --reportDir cypress/reports/${{ matrix.browsers }} -f "${{ matrix.browsers }}-report.html"
-      
+        run: npx marge cypress/reports/chrome/merged-reports.json --reportDir cypress/reports/chrome -f "chrome-report.html"
+
       - name: Upload HTML reports
         uses: actions/upload-artifact@v4
         with:
-          name: Cypress HTML Report ${{ matrix.browsers }} 
-          path: cypress/report/${{ matrix.browsers }}
+          name: Cypress HTML Report ${{ matrix.browsers }}
+          path: cypress/reports/chrome/*.html
