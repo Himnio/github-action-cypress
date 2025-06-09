@@ -1,15 +1,34 @@
 name: cypress-test
 
-on: push
+on: 
+  push:
+  workflow-dispatch:
 
 jobs:
   cypress-run:
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        browsers: [chrome, firefox, edge]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Cypress run 
+
+      - name: Cypress run in ${{ matrix.browsers }}
         uses: cypress-io/github-action@v6
         with:
-          build: npm run build
-          start: npm start
+          browsers: ${{matrix.browsers}}
+          command: npx cypress run --browser ${{matrix.browser}} --repoter-options reportDir=cypress/reports/${{ matrix.browser }}
+
+      - name: Merge Mochawesome reports
+        run: npx mochawesome-merge cypress/report/${{ matrix.browsers }}/*.json > cypress/reports/${{ matrix.browsers }}/merged-reports.json
+
+      - name: Generate HTML report
+        run: npx marge cypress/report/${{ matrix.browsers}}/merged-reports.json --reportDir cypress/reports/${{ matrix.browsers }} -f "${{ matrix.browsers }}-report.html"
+      
+      - name: Upload HTML reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cypress HTML Report ${{ matrix.browsers }} 
+          path: cypress/report/${{ matrix.browsers }}
