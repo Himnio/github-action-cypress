@@ -15,11 +15,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Create a director for report
+        run: |
+          mkdir -p cypess/reports/${{matrix.browsers}}
+
       - name: Cypress run in ${{ matrix.browsers }}
         uses: cypress-io/github-action@v6
         with:
           browsers: ${{matrix.browsers}}
-          command: npx cypress run --browser ${{matrix.browser}} --repoter-options reportDir=cypress/reports/${{ matrix.browser }}
+          command: npx cypress run --browser ${{matrix.browser}} --reporter-options reportDir=cypress/reports/${{ matrix.browser }}
 
       - name: Merge Mochawesome reports
         run: npx mochawesome-merge cypress/report/${{ matrix.browsers }}/*.json > cypress/reports/${{ matrix.browsers }}/merged-reports.json

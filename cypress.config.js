@@ -7,7 +7,7 @@ module.exports = defineConfig({
   },
   reporter: 'mochawesome',
   reporterOptions: {
-    reportDir: path.join(__dirname, 'cypress/results'),
+    reportDir: path.join(__dirname, 'cypress/reports'),
     overwrite: false,
     html: false,
     json: true,
