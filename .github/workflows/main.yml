@@ -2,7 +2,7 @@ name: cypress-test
 
 on: 
   push:
-  workflow-dispatch:
+  workflow_dispatch:
 
 jobs:
   cypress-run:
